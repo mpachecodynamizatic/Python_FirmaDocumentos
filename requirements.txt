@@ -1,28 +1,20 @@
-# Web Framework - FastAPI
+# Web Framework
 fastapi>=0.111.0
 uvicorn[standard]>=0.29.0
 
-# Web Framework - Flask
-flask>=3.0.0
-flask-cors>=4.0.0
-flask-sqlalchemy>=3.1.0
-
-# Base de datos
-sqlalchemy>=2.0.0
-alembic>=1.13.0
-
-# Validacion
+# Validacion de datos
 pydantic>=2.7.0
 pydantic-settings>=2.2.0
 
-# HTTP Client
-httpx>=0.27.0
-requests>=2.31.0
+# Firma Digital - PDF (PKCS#12 + CMS/PAdES)
+pyhanko[openssl]>=0.21.0
 
-# Seguridad
-python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
+# Firma Digital - XML (XMLDSig / XAdES)
+signxml>=3.2.0
+lxml>=5.2.0
+
+# Criptografia (PKCS#12, X.509)
+cryptography>=42.0.0
 
 # Utilidades
 python-dotenv>=1.0.0
-loguru>=0.7.0

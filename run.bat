@@ -276,18 +276,7 @@ if errorlevel 1 (
 )
 
 echo.
-if "%FRAMEWORK%"=="" (
-    echo Selecciona el framework a usar:
-    echo 1. FastAPI (recomendado - moderno, async)
-    echo 2. Flask (clasico, simple)
-    echo.
-    set /p FRAMEWORK="Ingresa 1 o 2 (default 1): "
-)
-
-if "%FRAMEWORK%"=="" set FRAMEWORK=1
-if "%FRAMEWORK%"=="fastapi" set FRAMEWORK=1
-if "%FRAMEWORK%"=="flask" set FRAMEWORK=2
-
+set FRAMEWORK=1
 echo.
 if "%FRAMEWORK%"=="1" (
     echo [*] Iniciando con FastAPI...
