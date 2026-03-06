@@ -64,6 +64,73 @@ codeunit 50100 "Digital Signing Mgt."
     // PRIVADOS
     // -------------------------------------------------------------------------
 
+    local procedure FirmarDocumento(DocumentBase64: Text; DocumentFormat: Text[10]): Text
+    var
+        CompanyInfo: Record "Company Information";
+        RequestBody: Text;
+        ResponseBody: Text;
+        JsonResponse: JsonObject;
+        JsonToken: JsonToken;
+        APIUrl: Text;
+        CertBase64: Text;
+        CertPassword: Text;
+        Client: HttpClient;
+        Request: HttpRequestMessage;
+        Response: HttpResponseMessage;
+        Content: HttpContent;
+        Headers: HttpHeaders;
+        JsonBody: Text;
+        ResponseText: Text;
+    begin
+        APIUrl := GetAPIUrl();
+
+        // Leer certificado y contraseña de Company Information
+        GetCertificateCredentials(CompanyInfo, CertBase64, CertPassword);
+
+        // Construir el JSON del request
+        RequestBody := BuildRequestJson(
+            DocumentBase64,
+            DocumentFormat,
+            CertBase64,
+            CertPassword
+        );
+
+        JsonBody := StrSubstNo('{"document_base64":"%1","format":"%2","certificate_base64":"%3","certificate_password":"%4"}', DocumentBase64, DocumentFormat, CertBase64, CertPassword);
+
+        Content.WriteFrom(JsonBody);
+        Content.GetHeaders(Headers);
+        Headers.Remove('Content-Type');
+        Headers.Add('Content-Type', 'application/json');
+
+        Request.Method := 'POST';
+        Request.SetRequestUri('https://TU-APP.azurewebsites.net/sign');
+        Request.GetHeaders(Headers);
+        Headers.Add('X-API-Key', 'tu-clave-secreta-aqui');
+        Request.Content := Content;
+
+        Client.Send(Request, Response);
+        Response.Content.ReadAs(ResponseBody);
+
+        // Parsear respuesta JSON
+        if not JsonResponse.ReadFrom(ResponseBody) then
+            Error('La API devolvió una respuesta no válida: %1', ResponseBody);
+
+        if not JsonResponse.Get('success', JsonToken) then
+            Error('Respuesta inesperada de la API (falta campo "success"): %1', ResponseBody);
+
+        if not JsonToken.AsValue().AsBoolean() then begin
+            if JsonResponse.Get('message', JsonToken) then
+                Error('La API de firma reportó un error: %1', JsonToken.AsValue().AsText())
+            else
+                Error('La API de firma reportó un error sin mensaje.');
+        end;
+
+        if not JsonResponse.Get('signed_document_base64', JsonToken) then
+            Error('La API no devolvió el documento firmado en la respuesta.');
+
+        exit(JsonToken.AsValue().AsText());
+    end;
+
     local procedure CallSigningAPI(DocumentBase64: Text; DocumentFormat: Text[10]): Text
     var
         CompanyInfo: Record "Company Information";

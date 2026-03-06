@@ -21,7 +21,6 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
-from signing import sign_pdf, sign_xml
 
 logging.basicConfig(
     level=logging.INFO,
@@ -133,6 +132,27 @@ def health_check():
     }
 
 
+@app.get("/test-import", include_in_schema=False)
+def test_import():
+    """Diagnóstico: prueba si los módulos de firma se pueden importar."""
+    results = {}
+    import sys
+    results["python"] = sys.version
+    results["sys_path"] = sys.path[:5]
+    for mod in ["cryptography", "lxml", "signxml", "pyhanko"]:
+        try:
+            __import__(mod)
+            results[mod] = "OK"
+        except Exception as e:
+            results[mod] = f"ERROR: {e}"
+    try:
+        from src.signing import sign_pdf, sign_xml  # noqa: F401
+        results["signing_module"] = "OK"
+    except Exception as e:
+        results["signing_module"] = f"ERROR: {e}"
+    return results
+
+
 @app.post("/sign", response_model=SignResponse, dependencies=[Depends(verify_api_key)])
 def sign_document(request: SignRequest):
     """
@@ -161,8 +181,10 @@ def sign_document(request: SignRequest):
 
         # Firmar según el formato
         if fmt == "pdf":
+            from src.signing import sign_pdf
             signed_bytes = sign_pdf(document_bytes, cert_bytes, password)
         elif fmt == "xml":
+            from src.signing import sign_xml
             signed_bytes = sign_xml(document_bytes, cert_bytes, password)
         else:
             raise HTTPException(

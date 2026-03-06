@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(DEPLOYMENT.md:*)",
+      "Bash(.env.azure.example:*)",
+      "Bash(SETUP-SUMMARY.md:*)"
+    ]
+  }
+}

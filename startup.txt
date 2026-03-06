@@ -1,0 +1,6 @@
+#!/bin/bash
+# Startup script para Azure App Service
+# Configura el PYTHONPATH y arranca la aplicación FastAPI
+
+export PYTHONPATH=/home/site/wwwroot
+exec gunicorn src.main:app --bind 0.0.0.0:8000 --worker-class uvicorn.workers.UvicornWorker --workers 2 --timeout 120 --access-logfile - --error-logfile -

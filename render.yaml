@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: firmadocumentos-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SIGNING_API_KEY
+        sync: false       # valor secreto: se introduce manualmente en el dashboard
+    autoDeploy: true
