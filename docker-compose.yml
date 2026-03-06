@@ -1,0 +1,21 @@
+# Docker Compose para pruebas locales (opcional)
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - FLASK_ENV=development
+      - SIGNING_API_KEY=${SIGNING_API_KEY:-}
+    volumes:
+      - ./src:/app/src
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
