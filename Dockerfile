@@ -34,5 +34,5 @@ EXPOSE 5000
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Comando para ejecutar la aplicación
-CMD ["python", "src/main.py"]
+# Comando para ejecutar la aplicación con Gunicorn
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "src.main:app"]

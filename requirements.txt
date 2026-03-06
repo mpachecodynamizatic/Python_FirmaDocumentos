@@ -16,3 +16,6 @@ cryptography>=42.0.0
 
 # Utilidades
 python-dotenv>=1.0.0
+
+# Servidor de producción
+gunicorn>=22.0.0
