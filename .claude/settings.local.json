@@ -5,7 +5,9 @@
       "Bash(.env.azure.example:*)",
       "Bash(SETUP-SUMMARY.md:*)",
       "Bash(setup-github-credentials.ps1:*)",
-      "Bash(GITHUB-SETUP.md:*)"
+      "Bash(GITHUB-SETUP.md:*)",
+      "Bash(setup-github-simple.ps1:*)",
+      "Bash(ALTERNATIVAS-DESPLIEGUE.md:*)"
     ]
   }
 }
