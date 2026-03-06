@@ -1,12 +1,3 @@
-# Archivos de Azure con secretos
-publish-profile.xml
-*.PublishSettings
-*.pubxml
-
-# Archivos temporales de despliegue
-deploy.zip
-firmadocumentos-deploy.zip
-
 # Python
 __pycache__/
 *.py[cod]
@@ -52,4 +43,4 @@ htmlcov/
 # Node (frontend)
 node_modules/
 dist/
-.next/.env.azure
+.next/
