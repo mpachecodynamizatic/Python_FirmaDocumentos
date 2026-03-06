@@ -9,7 +9,13 @@
       "Bash(setup-github-simple.ps1:*)",
       "Bash(ALTERNATIVAS-DESPLIEGUE.md:*)",
       "Bash(get-publish-profile.ps1:*)",
-      "Bash(VERIFICAR-SECRETOS.md:*)"
+      "Bash(VERIFICAR-SECRETOS.md:*)",
+      "Bash(test-api.py:*)",
+      "Bash(chmod:*)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)"
     ]
   }
 }

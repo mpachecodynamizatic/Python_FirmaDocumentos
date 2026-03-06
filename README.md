@@ -1,9 +1,9 @@
 # FIRMADOCUMENTOS
 ## NOTA
 0021efbb-7053-42c6-867e-c3145053bdae
-
+ru  
 ## Descripcion
-Proyecto Python con FastAPI y Flask (elige el que prefieras)
+API de Firma Digital de Documentos con Flask + Flask-RESTX
 
 ## Requisitos
 - Python 3.11+
@@ -47,33 +47,26 @@ init_db()
 
 ## Comandos utiles
 
-### Forma rapida (recomendado):
+### Arrancar servidor de desarrollo:
+
 ```bash
-# Desde el directorio del proyecto:
-# Windows:
-run.bat          # Ejecuta con FastAPI (default)
-run.bat fastapi  # Ejecuta con FastAPI
-run.bat flask    # Ejecuta con Flask
+# Opción 1: Ejecutar directamente
+python src/main.py
 
-### Forma manual:
+# Opción 2: Usando Flask CLI
+export FLASK_APP=src.main:app
+export FLASK_ENV=development
+flask run --port 8000
 
-#### Con FastAPI:
-```bash
-# Arrancar servidor de desarrollo
-uvicorn src.main:app --reload
-
-# Docs interactivos disponibles en:
-# http://localhost:8000/docs
+# Opción 3: Con recarga automática
+python -m flask --app src.main:app run --debug --port 8000
 ```
 
-#### Con Flask:
-```bash
-# Arrancar servidor de desarrollo
-python -m src.app_flask
+### Documentación API:
 
-# O usando flask run:
-flask --app src.app_flask run --reload
-```
+La API incluye Swagger UI automático:
+- **Swagger UI**: http://localhost:8000/docs
+- **API Base**: http://localhost:8000/api
 
 ### Testing y Linting:
 ```bash

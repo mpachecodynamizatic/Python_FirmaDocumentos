@@ -267,30 +267,23 @@ goto :eof
 echo.
 
 REM Verificar que las dependencias estan instaladas
-python -c "import fastapi" 2>nul
+python -c "import flask" 2>nul
 if errorlevel 1 (
     echo.
     echo [ADVERTENCIA] Dependencias no instaladas
     echo Instalando dependencias...
-    pip install -r requirements-dev.txt
+    pip install -r requirements.txt
+    if errorlevel 1 (
+        echo [ERROR] Error instalando dependencias
+        pause
+        exit /b 1
+    )
 )
 
 echo.
-set FRAMEWORK=1
+echo [*] Iniciando servidor Flask con Flask-RESTX...
+echo [*] Servidor disponible en: http://localhost:8000
+echo [*] Swagger UI en: http://localhost:8000/docs
+echo [*] API Base en: http://localhost:8000/api
 echo.
-if "%FRAMEWORK%"=="1" (
-    echo [*] Iniciando con FastAPI...
-    echo [*] Servidor disponible en: http://localhost:8000
-    echo [*] Docs interactivos en: http://localhost:8000/docs
-    echo.
-    uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-) else if "%FRAMEWORK%"=="2" (
-    echo [*] Iniciando con Flask...
-    echo [*] Servidor disponible en: http://localhost:8000
-    echo.
-    python -m src.app_flask
-) else (
-    echo [ERROR] Opcion invalida
-    pause
-    exit /b 1
-)
+python src\main.py
