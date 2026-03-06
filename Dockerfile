@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Exponer el puerto (Coolify asignará el puerto automáticamente)
-EXPOSE 8000 
+EXPOSE 5000 
 
 # Usuario no-root para seguridad
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
