@@ -9,6 +9,7 @@ on:
 env:
   PYTHON_VERSION: '3.11'
   AZURE_WEBAPP_NAME: 'dyna-firmadocumentos-api'
+  AZURE_RESOURCE_GROUP: 'rg-firmadocumentos'
 
 jobs:
   build-and-deploy:
@@ -17,6 +18,11 @@ jobs:
     steps:
     - name: 📥 Checkout código
       uses: actions/checkout@v4
+
+    - name: 🔐 Login a Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
       uses: actions/setup-python@v5
@@ -38,23 +44,21 @@ jobs:
           echo "✓ No hay tests configurados, saltando..."
         fi
 
-    - name: 📝 Crear archivos de configuración
+    - name: ⚙️ Configurar variables de entorno en Azure
       run: |
-        echo "Creando startup.txt..."
-        cat > startup.txt << 'INNER_EOF'
-        #!/bin/bash
-        export PYTHONPATH=/home/site/wwwroot
-        exec python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --log-level info
-        INNER_EOF
-        chmod +x startup.txt
-
-        echo "✓ Archivos de configuración creados"
+        az webapp config appsettings set \
+          --name ${{ env.AZURE_WEBAPP_NAME }} \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --settings \
+            SIGNING_API_KEY="${{ secrets.SIGNING_API_KEY }}" \
+            PYTHONPATH="/home/site/wwwroot" \
+            SCM_DO_BUILD_DURING_DEPLOYMENT="true" \
+            WEBSITES_PORT="8000"
 
     - name: 🚀 Desplegar a Azure Web App
       uses: azure/webapps-deploy@v3
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: .
 
     - name: ✅ Verificar despliegue

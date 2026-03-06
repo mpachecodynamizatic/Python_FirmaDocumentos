@@ -3,7 +3,9 @@
     "allow": [
       "Bash(DEPLOYMENT.md:*)",
       "Bash(.env.azure.example:*)",
-      "Bash(SETUP-SUMMARY.md:*)"
+      "Bash(SETUP-SUMMARY.md:*)",
+      "Bash(setup-github-credentials.ps1:*)",
+      "Bash(GITHUB-SETUP.md:*)"
     ]
   }
 }
