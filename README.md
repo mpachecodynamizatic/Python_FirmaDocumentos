@@ -50,15 +50,18 @@ init_db()
 ### Arrancar servidor de desarrollo:
 
 ```bash
-# Opción 1: Ejecutar directamente
+# Opción 1: Ejecutar como módulo (RECOMENDADO)
+python -m src.main
+
+# Opción 2: Ejecutar directamente
 python src/main.py
 
-# Opción 2: Usando Flask CLI
-export FLASK_APP=src.main:app
-export FLASK_ENV=development
+# Opción 3: Usando Flask CLI
+set FLASK_APP=src.main:app
+set FLASK_ENV=development
 flask run --port 8000
 
-# Opción 3: Con recarga automática
+# Opción 4: Con recarga automática
 python -m flask --app src.main:app run --debug --port 8000
 ```
 

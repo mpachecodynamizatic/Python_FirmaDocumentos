@@ -5,7 +5,10 @@ flask-cors>=4.0.0
 werkzeug>=3.0.0
 
 # Firma Digital - PDF (PKCS#12 + CMS/PAdES)
-pyhanko[openssl]>=0.21.0
+# Versión >= 0.25.0 tiene mejor soporte para PDFs con referencias híbridas
+pyhanko[openssl]>=0.25.0
+# pypdf para normalizar PDFs con referencias híbridas antes de firmar
+pypdf>=4.0.0
 
 # Firma Digital - XML (XMLDSig / XAdES)
 signxml>=3.2.0

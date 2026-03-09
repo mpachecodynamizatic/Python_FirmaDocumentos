@@ -359,7 +359,10 @@ class TestImport(Resource):
                 results[mod] = f"ERROR: {e}"
 
         try:
-            from src.signing import sign_pdf, sign_xml  # noqa: F401
+            try:
+                from src.signing import sign_pdf, sign_xml  # noqa: F401
+            except ImportError:
+                from signing import sign_pdf, sign_xml  # noqa: F401
             results["signing_module"] = "OK"
         except Exception as e:
             results["signing_module"] = f"ERROR: {e}"
@@ -430,10 +433,16 @@ class SignDocument(Resource):
 
             # Firmar según el formato
             if fmt == "pdf":
-                from src.signing import sign_pdf
+                try:
+                    from src.signing import sign_pdf
+                except ImportError:
+                    from signing import sign_pdf
                 signed_bytes = sign_pdf(document_bytes, cert_bytes, password)
             elif fmt == "xml":
-                from src.signing import sign_xml
+                try:
+                    from src.signing import sign_xml
+                except ImportError:
+                    from signing import sign_xml
                 signed_bytes = sign_xml(document_bytes, cert_bytes, password)
             else:
                 return {

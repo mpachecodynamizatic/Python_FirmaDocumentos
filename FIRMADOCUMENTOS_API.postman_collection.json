@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "0021efbb-7053-42c6-867e-c3145053bdae",
+		"name": "FIRMADOCUMENTOS API",
+		"description": "Colección de endpoints para la API de Firma Digital de Documentos.\n\nAutenticación: Requiere API Key en header X-API-Key (excepto endpoints públicos).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "firmadocumentos"
+	},
+	"item": [
+		{
+			"name": "Health & Status",
+			"item": [
+				{
+					"name": "Root - Página de Bienvenida",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Muestra la página HTML de bienvenida del servicio."
+					},
+					"response": []
+				},
+				{
+					"name": "API Root - Bienvenida",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api"
+							]
+						},
+						"description": "Muestra la página HTML de bienvenida del servicio en /api."
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Verifica el estado del servicio. Devuelve información sobre la versión y si la autenticación está habilitada."
+					},
+					"response": []
+				},
+				{
+					"name": "Test Import - Diagnóstico de Módulos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/test-import",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"test-import"
+							]
+						},
+						"description": "Diagnóstico técnico que verifica la disponibilidad de los módulos de firma (cryptography, lxml, signxml, pyhanko)."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints públicos para verificar el estado y salud del servicio."
+		},
+		{
+			"name": "Firma Digital",
+			"item": [
+				{
+					"name": "Firmar Documento PDF",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-API-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"document_base64\": \"JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgMyAwIFI+PgplbmRvYmoKMyAwIG9iago8PC9UeXBlL1BhZ2VzL0NvdW50IDEvS2lkc1syIDAgUl0+PgplbmRvYmoKMiAwIG9iago8PC9UeXBlL1BhZ2UvUGFyZW50IDMgMCBSL01lZGlhQm94WzAgMCA2MTIgNzkyXS9Db250ZW50cyA1IDAgUj4+CmVuZG9iago1IDAgb2JqCjw8L0xlbmd0aCA0Mz4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRG9jdW1lbnRvIGRlIHBydWViYSkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgMDAwMDAgbiAKMDAwMDAwMDEyNSAwMDAwMCBuIAowMDAwMDAwMDY0IDAwMDAwIG4gCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDIwOCAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgNi9Sb290IDQgMCBSPj4Kc3RhcnR4cmVmCjMwMAolJUVPRgo=\",\n    \"format\": \"pdf\",\n    \"certificate_base64\": \"<TU_CERTIFICADO_P12_EN_BASE64>\",\n    \"certificate_password\": \"<CONTRASEÑA_DEL_CERTIFICADO>\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sign"
+							]
+						},
+						"description": "Firma un documento PDF con un certificado PKCS#12.\n\n**Campos requeridos:**\n- `document_base64`: Documento PDF en Base64\n- `format`: \"pdf\"\n- `certificate_base64`: Certificado .p12/.pfx en Base64\n- `certificate_password`: Contraseña del certificado\n\n**Autenticación:** Requiere header X-API-Key"
+					},
+					"response": []
+				},
+				{
+					"name": "Firmar Documento XML",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-API-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"document_base64\": \"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGRvY3VtZW50bz4KICAgIDx0aXR1bG8+RG9jdW1lbnRvIGRlIFBydWViYTwvdGl0dWxvPgogICAgPGNvbnRlbmlkbz5Fc3RlIGVzIHVuIGRvY3VtZW50byBYTUwgZGUgcHJ1ZWJhPC9jb250ZW5pZG8+CjwvZG9jdW1lbnRvPg==\",\n    \"format\": \"xml\",\n    \"certificate_base64\": \"<TU_CERTIFICADO_P12_EN_BASE64>\",\n    \"certificate_password\": \"<CONTRASEÑA_DEL_CERTIFICADO>\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sign"
+							]
+						},
+						"description": "Firma un documento XML con un certificado PKCS#12.\n\n**Campos requeridos:**\n- `document_base64`: Documento XML en Base64\n- `format`: \"xml\"\n- `certificate_base64`: Certificado .p12/.pfx en Base64\n- `certificate_password`: Contraseña del certificado\n\n**Autenticación:** Requiere header X-API-Key"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints protegidos para firmar documentos PDF y XML."
+		},
+		{
+			"name": "Swagger UI",
+			"item": [
+				{
+					"name": "Ver Documentación Swagger",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/docs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"docs"
+							]
+						},
+						"description": "Abre la interfaz Swagger UI para explorar y probar la API interactivamente."
+					},
+					"response": []
+				}
+			],
+			"description": "Acceso a la documentación interactiva de la API."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "tu-api-key-aqui",
+			"type": "string"
+		}
+	]
+}
