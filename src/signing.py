@@ -198,6 +198,7 @@ def sign_xml(document_bytes: bytes, cert_bytes: bytes, password: str) -> bytes:
     """
     from lxml import etree
     from signxml import XMLSigner, methods
+    from cryptography.hazmat.primitives import serialization
 
     passphrase = password.encode("utf-8") if isinstance(password, str) else password
 
@@ -211,8 +212,11 @@ def sign_xml(document_bytes: bytes, cert_bytes: bytes, password: str) -> bytes:
     except etree.XMLSyntaxError as exc:
         raise ValueError(f"El documento XML no es válido: {exc}") from exc
 
+    # Convertir el certificado a formato PEM (signxml espera bytes en formato PEM)
+    cert_pem = certificate.public_bytes(serialization.Encoding.PEM)
+
     signer = XMLSigner(method=methods.enveloped)
-    signed_root = signer.sign(root, key=private_key, cert=certificate)
+    signed_root = signer.sign(root, key=private_key, cert=cert_pem)
 
     result = etree.tostring(
         signed_root,
