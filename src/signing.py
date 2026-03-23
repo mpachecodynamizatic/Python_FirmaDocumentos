@@ -19,14 +19,26 @@ logger = logging.getLogger(__name__)
 # PDF
 # ---------------------------------------------------------------------------
 
-def sign_pdf(document_bytes: bytes, cert_bytes: bytes, password: str) -> bytes:
+def sign_pdf(
+    document_bytes: bytes,
+    cert_bytes: bytes,
+    password: str,
+    visible: bool = False,
+    signature_position: tuple = (50, 50, 250, 100),
+    signature_page: int = 0
+) -> bytes:
     """
     Firma un documento PDF con el certificado PKCS#12 indicado.
 
     Args:
-        document_bytes: Contenido del PDF original.
-        cert_bytes:     Contenido del fichero .p12 / .pfx.
-        password:       Contraseña del certificado.
+        document_bytes:      Contenido del PDF original.
+        cert_bytes:          Contenido del fichero .p12 / .pfx.
+        password:            Contraseña del certificado.
+        visible:             Si True, crea una firma visible en el documento (default: False).
+        signature_position:  Tupla (x1, y1, x2, y2) con la posición del cuadro de firma visible.
+                             Solo se usa si visible=True (default: (50, 50, 250, 100)).
+        signature_page:      Número de página donde colocar la firma visible (0-indexed).
+                             Solo se usa si visible=True (default: 0 - primera página).
 
     Returns:
         Bytes del PDF firmado (firma incremental, PAdES compatible).
@@ -143,13 +155,31 @@ def sign_pdf(document_bytes: bytes, cert_bytes: bytes, password: str) -> bytes:
     # Configurar metadatos de firma
     signature_meta = signers.PdfSignatureMetadata(field_name="Firma")
 
+    # Configurar campo de firma visible o invisible
+    if visible:
+        # Firma VISIBLE: crea un campo en la página con coordenadas específicas
+        field_spec = SigFieldSpec(
+            "Firma",
+            on_page=signature_page,
+            box=signature_position
+        )
+        logger.info(
+            "Configurando firma VISIBLE en página %d, posición %s",
+            signature_page,
+            signature_position
+        )
+    else:
+        # Firma INVISIBLE: sin campo visual
+        field_spec = None
+        logger.info("Configurando firma INVISIBLE (sin representación visual)")
+
     try:
         # Intentar firmar el PDF
         out = signers.sign_pdf(
             writer,
             signature_meta,
             signer=signer,
-            new_field_spec=SigFieldSpec("Firma", on_page=0, box=(50, 50, 250, 100)),
+            new_field_spec=field_spec,
         )
 
         result = out.getvalue()

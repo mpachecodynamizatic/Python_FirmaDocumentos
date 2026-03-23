@@ -10,6 +10,10 @@ Uso:
 Configuración:
     - Define SIGNING_API_KEY en el entorno si la autenticación está habilitada
     - Por defecto usa http://localhost:8000
+
+NOTA: Este script crea firmas INVISIBLES por defecto.
+      Para probar firmas VISIBLES e INVISIBLES, usa:
+      python test_firma_visible_invisible.py
 """
 
 import os

@@ -307,6 +307,21 @@ sign_request_model = api.model('SignRequest', {
     'certificate_password': fields.String(
         required=True,
         description='Contraseña del certificado PKCS#12'
+    ),
+    'visible_signature': fields.Boolean(
+        required=False,
+        default=False,
+        description='Si es True, la firma será visible en el PDF. Solo aplica para formato PDF (default: False - firma invisible)'
+    ),
+    'signature_position': fields.List(
+        fields.Integer,
+        required=False,
+        description='Coordenadas [x1, y1, x2, y2] del cuadro de firma visible. Solo aplica si visible_signature=True (default: [50, 50, 250, 100])'
+    ),
+    'signature_page': fields.Integer(
+        required=False,
+        default=0,
+        description='Número de página donde colocar la firma visible (0=primera página). Solo aplica si visible_signature=True (default: 0)'
     )
 })
 
@@ -431,13 +446,35 @@ class SignDocument(Resource):
 
             password = data['certificate_password']
 
+            # Parámetros opcionales para firmas PDF
+            visible_signature = data.get('visible_signature', False)
+            signature_position = data.get('signature_position', [50, 50, 250, 100])
+            signature_page = data.get('signature_page', 0)
+
+            # Validar signature_position si se proporciona
+            if signature_position:
+                if not isinstance(signature_position, list) or len(signature_position) != 4:
+                    return {
+                        'signed_document_base64': '',
+                        'success': False,
+                        'message': "El parámetro 'signature_position' debe ser una lista de 4 enteros [x1, y1, x2, y2]."
+                    }, 400
+                signature_position = tuple(signature_position)
+
             # Firmar según el formato
             if fmt == "pdf":
                 try:
                     from src.signing import sign_pdf
                 except ImportError:
                     from signing import sign_pdf
-                signed_bytes = sign_pdf(document_bytes, cert_bytes, password)
+                signed_bytes = sign_pdf(
+                    document_bytes,
+                    cert_bytes,
+                    password,
+                    visible=visible_signature,
+                    signature_position=signature_position,
+                    signature_page=signature_page
+                )
             elif fmt == "xml":
                 try:
                     from src.signing import sign_xml
